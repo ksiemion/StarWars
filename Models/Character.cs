@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,12 +11,11 @@ namespace StarWars.Models
     {
         [Key]
         public int ID { get; set; }
-
-        [Required]
-        [MaxLength(50)]
         public string Name { get; set; }
-        public List<Episode> Episodes { get; set; } = new List<Episode>();
-        public List<Character> Friends { get; set; } = new List<Character>();
         public string Planet { get; set; }
+        public virtual ICollection<Episode> Episodes { get; set; }
+
+        public virtual ICollection<Character> Friends { get; set; }
+        public virtual ICollection<Character> FriendOf { get; set; }
     }
 }

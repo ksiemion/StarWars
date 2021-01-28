@@ -2,36 +2,23 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StarWars.Data;
 
 namespace StarWars.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210128212530_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
-
-            modelBuilder.Entity("CharacterCharacter", b =>
-                {
-                    b.Property<int>("FriendOfID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FriendsID")
-                        .HasColumnType("int");
-
-                    b.HasKey("FriendOfID", "FriendsID");
-
-                    b.HasIndex("FriendsID");
-
-                    b.ToTable("CharacterCharacter");
-                });
 
             modelBuilder.Entity("CharacterEpisode", b =>
                 {
@@ -79,21 +66,6 @@ namespace StarWars.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Episodes");
-                });
-
-            modelBuilder.Entity("CharacterCharacter", b =>
-                {
-                    b.HasOne("StarWars.Models.Character", null)
-                        .WithMany()
-                        .HasForeignKey("FriendOfID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StarWars.Models.Character", null)
-                        .WithMany()
-                        .HasForeignKey("FriendsID")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CharacterEpisode", b =>

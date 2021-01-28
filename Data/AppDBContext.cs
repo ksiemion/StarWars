@@ -16,5 +16,17 @@ namespace StarWars.Data
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Character>()
+                .HasMany(t => t.Episodes)
+                .WithMany(t => t.Characters);
+
+            modelBuilder.Entity<Character>()
+                .HasMany(u => u.Friends)
+                .WithMany(u => u.FriendOf);
+
+        }
     }
 }

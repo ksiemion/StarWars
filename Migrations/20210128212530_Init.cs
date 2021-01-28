@@ -13,18 +13,11 @@ namespace StarWars.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Planet = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CharacterID = table.Column<int>(type: "int", nullable: true)
+                    Planet = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Characters", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Characters_Characters_CharacterID",
-                        column: x => x.CharacterID,
-                        principalTable: "Characters",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -33,38 +26,53 @@ namespace StarWars.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CharacterID = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Episodes", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CharacterEpisode",
+                columns: table => new
+                {
+                    CharactersID = table.Column<int>(type: "int", nullable: false),
+                    EpisodesID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CharacterEpisode", x => new { x.CharactersID, x.EpisodesID });
                     table.ForeignKey(
-                        name: "FK_Episodes_Characters_CharacterID",
-                        column: x => x.CharacterID,
+                        name: "FK_CharacterEpisode_Characters_CharactersID",
+                        column: x => x.CharactersID,
                         principalTable: "Characters",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CharacterEpisode_Episodes_EpisodesID",
+                        column: x => x.EpisodesID,
+                        principalTable: "Episodes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Characters_CharacterID",
-                table: "Characters",
-                column: "CharacterID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Episodes_CharacterID",
-                table: "Episodes",
-                column: "CharacterID");
+                name: "IX_CharacterEpisode_EpisodesID",
+                table: "CharacterEpisode",
+                column: "EpisodesID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Episodes");
+                name: "CharacterEpisode");
 
             migrationBuilder.DropTable(
                 name: "Characters");
+
+            migrationBuilder.DropTable(
+                name: "Episodes");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StarWars.DTO;
 using StarWars.Models;
 using StarWars.Services;
 using System;
@@ -25,32 +26,35 @@ namespace StarWars.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(new Character());
+            return Ok(_characterService.GetCharacters());
         }
 
         // GET api/<CharacterController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(new Character());
+            return Ok(_characterService.GetCharacter(id));
         }
 
         // POST api/<CharacterController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post(CharacterDTO character)
         {
+            _characterService.Add(character);
         }
 
         // PUT api/<CharacterController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, CharacterDTO character)
         {
+            _characterService.Update(id, character);
         }
 
         // DELETE api/<CharacterController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _characterService.Delete(id);
         }
     }
 }
