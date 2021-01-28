@@ -34,6 +34,7 @@ namespace StarWars
                options.UseSqlServer(Configuration.GetConnectionString("AppDBConnection")));
 
             services.AddTransient<ICharacterService, CharacterService>();
+            services.AddTransient<IEpisodeService, EpisodeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

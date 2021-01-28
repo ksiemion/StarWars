@@ -10,6 +10,7 @@ namespace StarWars.Services
     public interface IEpisodeService
     {
         Episode GetByID(int id);
+        IEnumerable<Episode> GetEpisodes();
         void Add(Episode character);
         void Update(int id, Episode character);
         void Delete(int id);
@@ -17,32 +18,50 @@ namespace StarWars.Services
 
     public class EpisodeService : IEpisodeService
     {
-        //private readonly AppDBContext _context;
+        private readonly AppDBContext _context;
 
-        //public EpisodeService(AppDBContext context)
-        //{
-        //    _context = context;
-        //}
+        public EpisodeService(AppDBContext context)
+        {
+            _context = context;
+        }
+
+        public IEnumerable<Episode> GetEpisodes()
+        {
+            return _context.Episodes.ToList();
+        }
 
         public void Add(Episode episode)
         {
-            //_context.Episodes.Add(episode);
-            //_context.SaveChanges();
+            _context.Episodes.Add(episode);
+            _context.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var ep = _context.Episodes.SingleOrDefault(c => c.ID == id);
+            if (ep != null)
+            {
+                _context.Episodes.Remove(ep);
+                _context.SaveChanges();
+            }
         }
 
         public Episode GetByID(int id)
         {
-            throw new NotImplementedException();
+            var ep = _context.Episodes.SingleOrDefault(c => c.ID == id);
+            return ep;
         }
 
-        public void Update(int id, Episode character)
+        public void Update(int id, Episode episode)
         {
-            throw new NotImplementedException();
+            var ep = _context.Episodes.SingleOrDefault(c => c.ID == id);
+            if (ep != null)
+            {
+                if (!string.IsNullOrEmpty(episode.Name))
+                    ep.Name = episode.Name;
+
+                _context.SaveChanges();
+            }
         }
     }
 }
