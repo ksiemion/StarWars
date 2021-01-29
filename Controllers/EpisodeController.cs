@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StarWars.Models;
+using StarWars.DTO;
 using StarWars.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,26 +21,32 @@ namespace StarWars.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_episodeService.GetEpisodes());
+            var ep = _episodeService.GetEpisodes();
+            if (ep != null)
+                return Ok();
+            else return NotFound();
         }
 
         // GET api/<EpisodeController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(_episodeService.GetByID(id));
+            var ep = _episodeService.GetByID(id);
+            if (ep != null)
+                return Ok(ep);
+            else return NotFound();
         }
 
         // POST api/<EpisodeController>
         [HttpPost]
-        public void Post(Episode episode)
+        public void Post(EpisodeDTO episode)
         {
             _episodeService.Add(episode);
         }
 
         // PUT api/<EpisodeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, Episode episode)
+        public void Put(int id, EpisodeDTO episode)
         {
             _episodeService.Update(id, episode);
         }

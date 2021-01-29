@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StarWars.DTO;
-using StarWars.Models;
 using StarWars.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,14 +21,21 @@ namespace StarWars.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_characterService.GetCharacters());
+            var chr = _characterService.GetCharacters();
+            if (chr != null)
+                return Ok(_characterService.GetCharacters());
+            else
+                return NotFound();
         }
 
         // GET api/<CharacterController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return Ok(_characterService.GetCharacter(id));
+            var chr = _characterService.GetCharacter(id);
+            if (chr != null)
+                return Ok(chr);
+            else return NotFound();
         }
 
         // POST api/<CharacterController>

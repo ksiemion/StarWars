@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StarWars.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StarWars.Data
 {
@@ -26,7 +22,6 @@ namespace StarWars.Data
             modelBuilder.Entity<Character>()
                 .HasMany(u => u.Friends)
                 .WithMany(u => u.FriendOf);
-
         }
     }
 }

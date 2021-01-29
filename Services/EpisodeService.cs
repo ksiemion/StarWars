@@ -1,18 +1,17 @@
 ﻿using StarWars.Data;
+using StarWars.DTO;
 using StarWars.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace StarWars.Services
 {
     public interface IEpisodeService
     {
-        Episode GetByID(int id);
-        IEnumerable<Episode> GetEpisodes();
-        void Add(Episode character);
-        void Update(int id, Episode character);
+        EpisodeDTO GetByID(int id);
+        IEnumerable<EpisodeDTO> GetEpisodes();
+        void Add(EpisodeDTO character);
+        void Update(int id, EpisodeDTO character);
         void Delete(int id);
     }
 
@@ -25,15 +24,28 @@ namespace StarWars.Services
             _context = context;
         }
 
-        public IEnumerable<Episode> GetEpisodes()
+        public IEnumerable<EpisodeDTO> GetEpisodes()
         {
-            return _context.Episodes.ToList();
+            var ep = _context.Episodes.ToList();
+            if (ep != null)
+                return ep.Select(ce => new EpisodeDTO()
+                {
+                    Name = ce.Name
+                });
+            else return null;
         }
 
-        public void Add(Episode episode)
+        public void Add(EpisodeDTO episode)
         {
-            _context.Episodes.Add(episode);
-            _context.SaveChanges();
+            if (episode != null)
+            {
+                _context.Episodes.Add(new Episode()
+                {
+                    Name = episode.Name,
+
+                });
+                _context.SaveChanges();
+            }
         }
 
         public void Delete(int id)
@@ -46,21 +58,29 @@ namespace StarWars.Services
             }
         }
 
-        public Episode GetByID(int id)
-        {
-            var ep = _context.Episodes.SingleOrDefault(c => c.ID == id);
-            return ep;
-        }
-
-        public void Update(int id, Episode episode)
+        public EpisodeDTO GetByID(int id)
         {
             var ep = _context.Episodes.SingleOrDefault(c => c.ID == id);
             if (ep != null)
-            {
-                if (!string.IsNullOrEmpty(episode.Name))
-                    ep.Name = episode.Name;
+                return new EpisodeDTO()
+                {
+                    Name = ep.Name
+                };
+            else return null;
+        }
 
-                _context.SaveChanges();
+        public void Update(int id, EpisodeDTO episode)
+        {
+            if (episode != null)
+            {
+                var ep = _context.Episodes.SingleOrDefault(c => c.ID == id);
+                if (ep != null)
+                {
+                    if (!string.IsNullOrEmpty(episode.Name))
+                        ep.Name = episode.Name;
+
+                    _context.SaveChanges();
+                }
             }
         }
     }

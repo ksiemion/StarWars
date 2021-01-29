@@ -1,11 +1,9 @@
-﻿using StarWars.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StarWars.Data;
+using StarWars.DTO;
 using StarWars.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using StarWars.DTO;
 
 namespace StarWars.Services
 {
@@ -30,61 +28,70 @@ namespace StarWars.Services
         public CharacterDTO GetCharacter(int id)
         {
             var chr = _context.Characters.Include(e => e.Episodes).Include(e => e.Friends).SingleOrDefault(c => c.ID == id);
-            return new CharacterDTO()
-            {
-                Name = chr.Name,
-                Episodes = GetEpisodes(chr.Episodes),
-                Friends = GetFriends(chr.Friends),
-                Planet = chr.Planet
-            };
+            if (chr != null)
+                return new CharacterDTO()
+                {
+                    Name = chr.Name,
+                    Episodes = GetEpisodes(chr.Episodes),
+                    Friends = GetFriends(chr.Friends),
+                    Planet = chr.Planet
+                };
+            else return null;
         }
 
         public IEnumerable<CharacterDTO> GetCharacters()
         {
             var chr = _context.Characters.Include(e => e.Episodes).Include(e => e.Friends).ToList();
-            return chr.Select(ce => new CharacterDTO()
-            {
-                Name = ce.Name,
-                Episodes = GetEpisodes(ce.Episodes),
-                Friends = GetFriends(ce.Friends),
-                Planet = ce.Planet
-            });
+            if (chr != null)
+                return chr.Select(ce => new CharacterDTO()
+                {
+                    Name = ce.Name,
+                    Episodes = GetEpisodes(ce.Episodes),
+                    Friends = GetFriends(ce.Friends),
+                    Planet = ce.Planet
+                });
+            else return null;
         }
 
         public void Add(CharacterDTO character)
         {
-            _context.Characters.Add(new Character()
+            if (character != null)
             {
-                Name = character.Name,
-                Friends = GetFriends(character.Friends),
-                Episodes = GetEpisodes(character.Episodes),
-                Planet = character.Planet
+                _context.Characters.Add(new Character()
+                {
+                    Name = character.Name,
+                    Friends = GetFriends(character.Friends),
+                    Episodes = GetEpisodes(character.Episodes),
+                    Planet = character.Planet
 
-            });
-
-            _context.SaveChanges();
+                });
+                _context.SaveChanges();
+            }
         }
 
         public void Update(int id, CharacterDTO character)
         {
-            Character chr = _context.Characters.Include(e => e.Episodes).Include(e => e.Friends).SingleOrDefault(c => c.ID == id);
-            if (chr != null)
+            if (character != null)
             {
-                if (!string.IsNullOrEmpty(character.Name))
-                    chr.Name = character.Name;
+                Character chr = _context.Characters.Include(e => e.Episodes).Include(e => e.Friends).SingleOrDefault(c => c.ID == id);
+                if (chr != null)
+                {
+                    if (!string.IsNullOrEmpty(character.Name))
+                        chr.Name = character.Name;
 
-                if (character.Episodes != null)
-                    if (character.Episodes.Length > 0)
-                        chr.Episodes = GetEpisodes(character.Episodes);
+                    if (character.Episodes != null)
+                        if (character.Episodes.Length > 0)
+                            chr.Episodes = GetEpisodes(character.Episodes);
 
-                if (character.Episodes != null)
-                    if (character.Episodes.Length > 0)
-                        chr.Friends = GetFriends(character.Friends);
+                    if (character.Episodes != null)
+                        if (character.Episodes.Length > 0)
+                            chr.Friends = GetFriends(character.Friends);
 
-                if (!string.IsNullOrEmpty(character.Planet))
-                    chr.Planet = character.Planet;
+                    if (!string.IsNullOrEmpty(character.Planet))
+                        chr.Planet = character.Planet;
 
-                _context.SaveChanges();
+                    _context.SaveChanges();
+                }
             }
         }
 
