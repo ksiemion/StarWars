@@ -23,7 +23,7 @@ namespace StarWars.Controllers
         {
             var ep = _episodeService.GetEpisodes();
             if (ep != null)
-                return Ok();
+                return Ok(ep);
             else return NotFound();
         }
 

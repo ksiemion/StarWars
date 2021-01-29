@@ -23,7 +23,18 @@ namespace StarWars.Controllers
         {
             var chr = _characterService.GetCharacters();
             if (chr != null)
-                return Ok(_characterService.GetCharacters());
+                return Ok(chr);
+            else
+                return NotFound();
+        }
+
+        // GET: api/<CharacterController>
+        [HttpGet("{pageNumber}/{pageSize}")]
+        public IActionResult GetByPage(int pageNumber = 1, int pageSize = 5)
+        {
+            var chr = _characterService.GetCharacters(pageNumber, pageSize);
+            if (chr != null)
+                return Ok(chr);
             else
                 return NotFound();
         }

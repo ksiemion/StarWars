@@ -11,6 +11,7 @@ namespace StarWars.Services
     {
         CharacterDTO GetCharacter(int id);
         IEnumerable<CharacterDTO> GetCharacters();
+        IEnumerable<CharacterDTO> GetCharacters(int pageNumber, int pageSize);
         void Add(CharacterDTO character);
         void Update(int id, CharacterDTO character);
         void Delete(int id);
@@ -42,6 +43,23 @@ namespace StarWars.Services
         public IEnumerable<CharacterDTO> GetCharacters()
         {
             var chr = _context.Characters.Include(e => e.Episodes).Include(e => e.Friends).ToList();
+            if (chr != null)
+                return chr.Select(ce => new CharacterDTO()
+                {
+                    Name = ce.Name,
+                    Episodes = GetEpisodes(ce.Episodes),
+                    Friends = GetFriends(ce.Friends),
+                    Planet = ce.Planet
+                });
+            else return null;
+        }
+
+        public IEnumerable<CharacterDTO> GetCharacters(int pageNumber, int pageSize)
+        {
+            var chr = _context.Characters.Include(e => e.Episodes).Include(e => e.Friends)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize).ToList();
+
             if (chr != null)
                 return chr.Select(ce => new CharacterDTO()
                 {
