@@ -32,6 +32,7 @@ namespace StarWars.Services
             if (chr != null)
                 return new CharacterDTO()
                 {
+                    ID = chr.ID,
                     Name = chr.Name,
                     Episodes = GetEpisodes(chr.Episodes),
                     Friends = GetFriends(chr.Friends),
@@ -46,6 +47,7 @@ namespace StarWars.Services
             if (chr != null)
                 return chr.Select(ce => new CharacterDTO()
                 {
+                    ID = ce.ID,
                     Name = ce.Name,
                     Episodes = GetEpisodes(ce.Episodes),
                     Friends = GetFriends(ce.Friends),
@@ -63,6 +65,7 @@ namespace StarWars.Services
             if (chr != null)
                 return chr.Select(ce => new CharacterDTO()
                 {
+                    ID = ce.ID,
                     Name = ce.Name,
                     Episodes = GetEpisodes(ce.Episodes),
                     Friends = GetFriends(ce.Friends),
