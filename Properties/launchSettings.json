@@ -20,7 +20,7 @@
     "StarWars": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/Character",
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
