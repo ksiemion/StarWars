@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace StarWars.Migrations
+namespace StarWars.Infrastructure.Migrations
 {
     public partial class Friends : Migration
     {

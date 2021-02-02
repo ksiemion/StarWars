@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StarWars.Data;
+using StarWars.Infrastructure.Data;
 
-namespace StarWars.Migrations
+namespace StarWars.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     [Migration("20210128212530_Init")]

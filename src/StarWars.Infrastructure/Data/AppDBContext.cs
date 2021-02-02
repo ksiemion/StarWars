@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StarWars.Models;
+using StarWars.Core.Domain;
 
-namespace StarWars.Data
+namespace StarWars.Infrastructure.Data
 {
     public class AppDBContext : DbContext
     {
@@ -15,6 +15,11 @@ namespace StarWars.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Character>().HasKey(x => x.ID);
+            modelBuilder.Entity<Episode>().HasKey(x => x.ID);
+
             modelBuilder.Entity<Character>()
                 .HasMany(t => t.Episodes)
                 .WithMany(t => t.Characters);

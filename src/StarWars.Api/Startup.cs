@@ -5,8 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using StarWars.Data;
-using StarWars.Services;
+using StarWars.Core.Repositories;
+using StarWars.Infrastructure.Data;
+using StarWars.Infrastructure.Repositories;
+using StarWars.Infrastructure.Services;
 
 namespace StarWars
 {
@@ -22,17 +24,25 @@ namespace StarWars
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddScoped<IRepository, Repository>();
+            services.AddTransient(typeof(IRepository), typeof(Repository));
+            services.AddScoped<ICharacterService, CharacterService>();
+            services.AddScoped<IEpisodeService, EpisodeService>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StarWars", Version = "v1" });
             });
 
-            services.AddDbContext<AppDBContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("AppDBConnection")));
+            services.AddDbContext<AppDBContext>(
+                options =>
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("AppDBConnection"),
+                        x => x.MigrationsAssembly("StarWars.Infrastructure")));
 
-            services.AddScoped<ICharacterService, CharacterService>();
-            services.AddScoped<IEpisodeService, EpisodeService>();
+            //services.AddDbContext<AppDBContext>(options =>
+            //   options.UseSqlServer(Configuration.GetConnectionString("AppDBConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

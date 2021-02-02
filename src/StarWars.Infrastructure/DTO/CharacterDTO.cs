@@ -1,4 +1,4 @@
-﻿namespace StarWars.DTO
+﻿namespace StarWars.Infrastructure.DTO
 {
     public class CharacterDTO
     {
