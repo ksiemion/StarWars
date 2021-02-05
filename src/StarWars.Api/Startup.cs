@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using StarWars.Core.Repositories;
+using StarWars.Infrastructure;
 using StarWars.Infrastructure.Data;
+using StarWars.Infrastructure.Mappers;
 using StarWars.Infrastructure.Repositories;
 using StarWars.Infrastructure.Services;
 
@@ -24,10 +26,19 @@ namespace StarWars
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddScoped<IRepository, Repository>();
-            services.AddTransient(typeof(IRepository), typeof(Repository));
+            services.AddScoped<IRepository, Repository>();
+            //services.AddTransient<IRepository, Repository>();
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<IEpisodeService, EpisodeService>();
+
+            //services.AddTransient<CharacterResolver>();
+            //services.AddTransient<CharacterProfile>();
+            //services.AddSingleton(AutoMapperConfig.Init());
+
+            services.AddMapperService();
+
+
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -56,11 +67,8 @@ namespace StarWars
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

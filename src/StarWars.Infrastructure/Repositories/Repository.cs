@@ -33,9 +33,14 @@ namespace StarWars.Infrastructure.Repositories
             return ApplyIncludes(includes).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
 
-        public T GetBy<T>(Expression<Func<T, bool>> expr) where T : BaseEntity
+        public T GetBy<T>(Expression<Func<T, bool>> expr, params Expression<Func<T, object>>[] includes) where T : BaseEntity
         {
-            return _dbContext.Set<T>().SingleOrDefault(expr);
+            return ApplyIncludes(includes).SingleOrDefault(expr);
+        }
+
+        public ICollection<T> GetAllBy<T>(Expression<Func<T, bool>> expr, params Expression<Func<T, object>>[] includes) where T : BaseEntity
+        {
+            return ApplyIncludes(includes).Where(expr).ToList();
         }
 
         public T Add<T>(T entity) where T : BaseEntity
@@ -60,8 +65,10 @@ namespace StarWars.Infrastructure.Repositories
 
         private IQueryable<T> ApplyIncludes<T>(params Expression<Func<T, object>>[] includes) where T : BaseEntity
         {
-            var dbSet = _dbContext.Set<T>();
             IQueryable<T> query = null;
+            var dbSet = _dbContext.Set<T>();
+            if (includes == null)
+                return dbSet;
 
             if (includes.Length > 0)
                 query = dbSet.Include(includes[0]);
@@ -71,7 +78,7 @@ namespace StarWars.Infrastructure.Repositories
                 query = query.Include(includes[i]);
             }
 
-            return query == null ? dbSet : query;
+            return query ?? dbSet;
         }
     }
 }

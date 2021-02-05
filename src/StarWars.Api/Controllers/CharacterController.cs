@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StarWars.Core.Domain;
 using StarWars.Infrastructure.DTO;
 using StarWars.Infrastructure.Services;
 

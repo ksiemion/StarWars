@@ -19,6 +19,7 @@ namespace StarWars.Infrastructure.Data
 
             modelBuilder.Entity<Character>().HasKey(x => x.ID);
             modelBuilder.Entity<Episode>().HasKey(x => x.ID);
+            modelBuilder.Entity<Planet>().HasKey(x => x.ID);
 
             modelBuilder.Entity<Character>()
                 .HasMany(t => t.Episodes)
@@ -27,6 +28,10 @@ namespace StarWars.Infrastructure.Data
             modelBuilder.Entity<Character>()
                 .HasMany(u => u.Friends)
                 .WithMany(u => u.FriendOf);
+
+            modelBuilder.Entity<Character>()
+               .HasOne(p => p.Planet)
+               .WithMany(c => c.Characters);
         }
     }
 }
