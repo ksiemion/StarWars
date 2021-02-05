@@ -35,7 +35,7 @@ namespace StarWars.Infrastructure.Repositories
 
         public T GetBy<T>(Expression<Func<T, bool>> expr, params Expression<Func<T, object>>[] includes) where T : BaseEntity
         {
-            return ApplyIncludes(includes).SingleOrDefault(expr);
+            return ApplyIncludes(includes).FirstOrDefault(expr);
         }
 
         public ICollection<T> GetAllBy<T>(Expression<Func<T, bool>> expr, params Expression<Func<T, object>>[] includes) where T : BaseEntity
