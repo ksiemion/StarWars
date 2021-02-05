@@ -13,7 +13,7 @@ namespace StarWars.Infrastructure.Services
         CharacterDTO GetCharacter(int id);
         IEnumerable<CharacterDTO> GetCharacters();
         IEnumerable<CharacterDTO> GetCharacters(int pageNumber, int pageSize);
-        void Add(CharacterDTO character);
+        Character Add(CharacterDTO character);
         void Update(int id, CharacterDTO character);
         void Delete(int id);
     }
@@ -31,89 +31,55 @@ namespace StarWars.Infrastructure.Services
 
         public CharacterDTO GetCharacter(int id)
         {
-            try
+            var chr = _repository.GetById<Character>(id, x => x.Episodes, x => x.Friends, x => x.Planet);
+            if (chr != null)
             {
-                var chr = _repository.GetById<Character>(id, x => x.Episodes, x => x.Friends, x => x.Planet);
-                if (chr != null)
-                    return _mapper.Map<CharacterDTO>(chr);
-
-                else return null;
+                return _mapper.Map<CharacterDTO>(chr);
             }
-            catch
-            {
-                //TODO: error
-                return null;
-            }
+            else return null;
         }
 
         public IEnumerable<CharacterDTO> GetCharacters()
         {
-            try
+            var chr = _repository.GetAll<Character>(x => x.Episodes, x => x.Friends, x => x.Planet);
+            if (chr != null)
             {
-                var chr = _repository.GetAll<Character>(x => x.Episodes, x => x.Friends, x => x.Planet);
-                if (chr != null)
-                    return _mapper.Map<IEnumerable<CharacterDTO>>(chr);
-
-                else return null;
+                return _mapper.Map<IEnumerable<CharacterDTO>>(chr);
             }
-            catch
-            {
-                return null; //TODO: error
-            }
+            else return null;
         }
 
         public IEnumerable<CharacterDTO> GetCharacters(int pageNumber, int pageSize)
         {
-            try
+            var chr = _repository.GetByPage<Character>(pageNumber, pageSize, x => x.Episodes, x => x.Friends, x => x.Planet);
+            if (chr != null)
             {
-                var chr = _repository.GetByPage<Character>(pageNumber, pageSize, x => x.Episodes, x => x.Friends, x => x.Planet);
-                if (chr != null)
-                    return _mapper.Map<IEnumerable<CharacterDTO>>(chr);
+                return _mapper.Map<IEnumerable<CharacterDTO>>(chr);
+            }
 
-                else return null;
-            }
-            catch
-            {
-                return null; //TODO: error
-            }
+            else return null;
         }
 
-        public void Add(CharacterDTO character)
+        public Character Add(CharacterDTO character)
         {
-            try
-            {
-                if (character != null)
-                    _repository.Add(_mapper.Map<Character>(character));
-            }
-            catch(Exception exc)
-            {
-                //TODO: error
-            }
+            return _repository.Add(_mapper.Map<Character>(character));
         }
 
         public void Update(int id, CharacterDTO character)
         {
-            try
+            var oldChr = _repository.GetById<Character>(id, x => x.Episodes, x => x.Friends, x => x.Planet);
+            if (oldChr == null)
             {
-                if (character != null)
-                    _repository.Update(_mapper.Map<Character>(character));
+                throw new Exception($"Could not find a character with id: {id}");
             }
-            catch
-            {
-                //TODO: error
-            }
+
+            var newChr = _mapper.Map(character, oldChr);
+            _repository.Update(newChr);
         }
 
         public void Delete(int id)
         {
-            try
-            {
-                _repository.Delete<Character>(id);
-            }
-            catch
-            {
-                //TODO: error
-            }
+            _repository.Delete<Character>(id);
         }
     }
 }

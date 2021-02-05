@@ -27,7 +27,9 @@ namespace StarWars.Api.Controllers
         {
             var pl = _planetService.GetAll();
             if (pl != null)
+            {
                 return Ok(pl);
+            }
             else
                 return NotFound();
         }
@@ -38,7 +40,9 @@ namespace StarWars.Api.Controllers
         {
             var pl = _planetService.GetByID(id);
             if (pl != null)
+            {
                 return Ok(pl);
+            }
             else return NotFound();
         }
 

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StarWars.Api.Middleware;
 using StarWars.Core.Repositories;
 using StarWars.Infrastructure;
 using StarWars.Infrastructure.Data;
@@ -27,18 +28,9 @@ namespace StarWars
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IRepository, Repository>();
-            //services.AddTransient<IRepository, Repository>();
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<IEpisodeService, EpisodeService>();
-
-            //services.AddTransient<CharacterResolver>();
-            //services.AddTransient<CharacterProfile>();
-            //services.AddSingleton(AutoMapperConfig.Init());
-
             services.AddMapperService();
-
-
-
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -51,9 +43,6 @@ namespace StarWars
                     options.UseSqlServer(
                         Configuration.GetConnectionString("AppDBConnection"),
                         x => x.MigrationsAssembly("StarWars.Infrastructure")));
-
-            //services.AddDbContext<AppDBContext>(options =>
-            //   options.UseSqlServer(Configuration.GetConnectionString("AppDBConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +54,9 @@ namespace StarWars
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StarWars v1"));
             }
+
+            app.UseMiddleware<ExcHandlerMiddleware>();
+
 
             app.UseHttpsRedirection();
             app.UseRouting();

@@ -11,7 +11,7 @@ namespace StarWars.Infrastructure.Services
     {
         PlanetDTO GetByID(int id);
         IEnumerable<PlanetDTO> GetAll();
-        void Add(PlanetDTO planet);
+        Planet Add(PlanetDTO planet);
         void Update(int id, PlanetDTO planet);
         void Delete(int id);
     }
@@ -27,79 +27,44 @@ namespace StarWars.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public void Add(PlanetDTO planet)
+        public Planet Add(PlanetDTO planet)
         {
-            try
-            {
-                if (planet != null)
-                {
-                    _repository.Add(_mapper.Map<Planet>(planet));
-                }
-            }
-            catch (Exception exc)
-            {
-                //TODO: error
-            }
+            return _repository.Add(_mapper.Map<Planet>(planet));
         }
 
         public void Delete(int id)
         {
-            try
-            {
-                _repository.Delete<Planet>(id);
-            }
-            catch
-            {
-                //TODO: error
-            }
+            _repository.Delete<Planet>(id);
         }
 
         public IEnumerable<PlanetDTO> GetAll()
         {
-            try
+            var pl = _repository.GetAll<Planet>();
+            if (pl != null)
             {
-                var pl = _repository.GetAll<Planet>();
-                if (pl != null)
-                    return _mapper.Map<IEnumerable<PlanetDTO>>(pl);
-
-                else return null;
+                return _mapper.Map<IEnumerable<PlanetDTO>>(pl);
             }
-            catch
-            {
-                return null; //TODO: error
-            }
+            else return null;
         }
 
         public PlanetDTO GetByID(int id)
         {
-            try
+            var pl = _repository.GetById<Planet>(id);
+            if (pl != null)
             {
-                var pl = _repository.GetById<Planet>(id);
-                if (pl != null)
-                    return _mapper.Map<PlanetDTO>(pl);
-                else return null;
+                return _mapper.Map<PlanetDTO>(pl);
             }
-            catch
-            {
-                //TODO: error
-                return null;
-            }
+            else return null;
         }
 
         public void Update(int id, PlanetDTO planet)
         {
-            try
-            {
-                if (planet != null)
-                {
-                    _repository.Update(_mapper.Map<Planet>(planet));
-                    
-                }
-            }
-            catch
-            {
-                //TODO: error
-            }
+            var oldPl = _repository.GetById<Character>(id);
+            if (oldPl == null)
+                throw new Exception($"Could not find a planet with id: {id}");
+
+            var newPl = _mapper.Map(planet, oldPl);
+            _repository.Update(newPl);
         }
     }
 }

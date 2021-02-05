@@ -1,6 +1,8 @@
-﻿using StarWars.Core.Domain;
+﻿using AutoMapper;
+using StarWars.Core.Domain;
 using StarWars.Core.Repositories;
 using StarWars.Infrastructure.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,7 +12,7 @@ namespace StarWars.Infrastructure.Services
     {
         EpisodeDTO GetByID(int id);
         IEnumerable<EpisodeDTO> GetEpisodes();
-        void Add(EpisodeDTO character);
+        Episode Add(EpisodeDTO character);
         void Update(int id, EpisodeDTO character);
         void Delete(int id);
     }
@@ -18,110 +20,52 @@ namespace StarWars.Infrastructure.Services
     public class EpisodeService : IEpisodeService
     {
         private readonly IRepository _repository;
+        private readonly IMapper _mapper;
 
-        public EpisodeService(IRepository repository)
+        public EpisodeService(IRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public EpisodeDTO GetByID(int id)
         {
-            try
+            var ep = _repository.GetById<Episode>(id);
+            if (ep != null)
             {
-                var ep = _repository.GetById<Episode>(id);
-                if (ep != null)
-                    return new EpisodeDTO()
-                    {
-                        Name = ep.Name
-                    };
-                else return null;
+                return _mapper.Map<EpisodeDTO>(ep);
             }
-            catch
-            {
-                //TODO: error
-                return null;
-            }
+            else return null;
         }
 
         public IEnumerable<EpisodeDTO> GetEpisodes()
         {
-            try
+            var ep = _repository.GetAll<Episode>(null);
+            if (ep != null)
             {
-                var ep = _repository.GetAll<Episode>(null);
-                if (ep != null)
-                    return ep.Select(ce => new EpisodeDTO()
-                    {
-                        Name = ce.Name
-                    });
-                else return null;
+                return _mapper.Map<IEnumerable<EpisodeDTO>>(ep);
             }
-            catch
-            {
-                //TODO: error
-                return null;
-            }
+            else return null;
         }
 
-        public void Add(EpisodeDTO episode)
+        public Episode Add(EpisodeDTO episode)
         {
-            try
-            {
-                if (episode != null)
-                {
-                    _repository.Add(new Episode()
-                    {
-                        Name = episode.Name
-                    });
-
-                    //_context.Episodes.Add(new Episode()
-                    //{
-                    //    Name = episode.Name,
-
-                    //});
-                    //_context.SaveChanges();
-                }
-            }
-            catch
-            {
-                //TODO: error
-            }
+            return _repository.Add(_mapper.Map<Episode>(episode));
         }
+
         public void Update(int id, EpisodeDTO episode)
         {
-            try
-            {
-                if (episode != null)
-                {
-                    _repository.Update(new Episode()
-                    {
-                        Name = episode.Name
-                    });
+            var oldEpi = _repository.GetById<Episode>(id);
+            if (oldEpi == null)
+                throw new Exception($"Could not find a episode with id: {id}");
 
-                    //if (ep != null)
-                    //{
-                    //    if (!string.IsNullOrEmpty(episode.Name))
-                    //        ep.Name = episode.Name;
-
-                    //    _context.SaveChanges();
-                    //}
-                }
-            }
-            catch
-            {
-                //TODO: error
-            }
+            var newEpi = _mapper.Map(episode, oldEpi);
+            _repository.Update(newEpi);
         }
 
         public void Delete(int id)
         {
-            try
-            {
-                _repository.Delete<Episode>(id);
-            }
-            catch
-            {
-                //TODO: error
-            }
+            _repository.Delete<Episode>(id);
         }
     }
 }

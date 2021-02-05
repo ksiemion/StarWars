@@ -23,7 +23,9 @@ namespace StarWars.Controllers
         {
             var ep = _episodeService.GetEpisodes();
             if (ep != null)
+            {
                 return Ok(ep);
+            }
             else return NotFound();
         }
 
@@ -33,7 +35,9 @@ namespace StarWars.Controllers
         {
             var ep = _episodeService.GetByID(id);
             if (ep != null)
+            {
                 return Ok(ep);
+            }
             else return NotFound();
         }
 

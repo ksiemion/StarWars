@@ -2,6 +2,7 @@
 using StarWars.Core.Domain;
 using StarWars.Infrastructure.DTO;
 using StarWars.Infrastructure.Services;
+using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,9 +25,13 @@ namespace StarWars.Controllers
         {
             var chr = _characterService.GetCharacters();
             if (chr != null)
+            {
                 return Ok(chr);
+            }
             else
+            {
                 return NotFound();
+            }
         }
 
         // GET: api/<CharacterController>
@@ -35,33 +40,50 @@ namespace StarWars.Controllers
         {
             var chr = _characterService.GetCharacters(pageNumber, pageSize);
             if (chr != null)
+            {
                 return Ok(chr);
+            }
             else
+            {
                 return NotFound();
+            }
         }
 
         // GET api/<CharacterController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCharacter")]
         public IActionResult Get(int id)
         {
             var chr = _characterService.GetCharacter(id);
             if (chr != null)
+            {
                 return Ok(chr);
-            else return NotFound();
+            }
+            else
+            {
+                return NotFound($"Character By ID {id} was not found");
+            }
         }
 
         // POST api/<CharacterController>
         [HttpPost]
-        public void Post(CharacterDTO character)
+        public IActionResult Post(CharacterDTO character)
         {
-            _characterService.Add(character);
+            var chr = _characterService.Add(character);
+            if (chr == null)
+            {
+                return NotFound($"Could not add character to the database");
+            }
+
+            var uri = Url.Link("GetCharacter", new { id = chr.ID });
+            return Created(uri, chr);
         }
 
         // PUT api/<CharacterController>/5
         [HttpPut("{id}")]
-        public void Put(int id, CharacterDTO character)
+        public IActionResult Put(int id, CharacterDTO character)
         {
             _characterService.Update(id, character);
+            return Ok(character);
         }
 
         // DELETE api/<CharacterController>/5

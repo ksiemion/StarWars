@@ -28,7 +28,9 @@ namespace StarWars.Infrastructure.Mappers
                 {
                     var epi = _repository.GetBy<Character>(X => X.Name == name);
                     if (epi != null)
+                    {
                         coll.Add(epi);
+                    }
                 }
             }
             return coll;
