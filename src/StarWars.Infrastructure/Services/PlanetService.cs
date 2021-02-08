@@ -59,7 +59,7 @@ namespace StarWars.Infrastructure.Services
 
         public void Update(int id, PlanetDTO planet)
         {
-            var oldPl = _repository.GetById<Character>(id);
+            var oldPl = _repository.GetById<Planet>(id);
             if (oldPl == null)
                 throw new Exception($"Could not find a planet with id: {id}");
 

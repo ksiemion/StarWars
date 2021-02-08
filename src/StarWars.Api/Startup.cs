@@ -9,7 +9,6 @@ using StarWars.Api.Middleware;
 using StarWars.Core.Repositories;
 using StarWars.Infrastructure;
 using StarWars.Infrastructure.Data;
-using StarWars.Infrastructure.Mappers;
 using StarWars.Infrastructure.Repositories;
 using StarWars.Infrastructure.Services;
 
@@ -30,9 +29,11 @@ namespace StarWars
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<IEpisodeService, EpisodeService>();
+            services.AddScoped<IPlanetService, PlanetService>();
             services.AddMapperService();
 
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StarWars", Version = "v1" });

@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StarWars.Infrastructure.DTO;
 using StarWars.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,21 +39,35 @@ namespace StarWars.Api.Controllers
             {
                 return Ok(pl);
             }
-            else return NotFound();
+            else
+            {
+                return NotFound($"Planet By ID {id} was not found");
+            }
         }
 
         // POST api/<PlanetController>
         [HttpPost]
-        public void Post(PlanetDTO planet)
+        public IActionResult Post(PlanetDTO planet)
         {
-            _planetService.Add(planet);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var pl = _planetService.Add(planet);
+            if (pl == null)
+            {
+                return NotFound($"Could not add planet to the database");
+            }
+            return CreatedAtAction("Get", new { id = pl.ID }, pl);
         }
 
         // PUT api/<PlanetController>/5
         [HttpPut("{id}")]
-        public void Put(int id, PlanetDTO planet)
+        public IActionResult Put(int id, PlanetDTO planet)
         {
             _planetService.Update(id, planet);
+            return Ok(planet);
         }
 
         // DELETE api/<PlanetController>/5

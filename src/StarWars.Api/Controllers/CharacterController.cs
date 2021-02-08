@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StarWars.Core.Domain;
 using StarWars.Infrastructure.DTO;
 using StarWars.Infrastructure.Services;
-using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -68,14 +66,17 @@ namespace StarWars.Controllers
         [HttpPost]
         public IActionResult Post(CharacterDTO character)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var chr = _characterService.Add(character);
             if (chr == null)
             {
                 return NotFound($"Could not add character to the database");
             }
-
-            var uri = Url.Link("GetCharacter", new { id = chr.ID });
-            return Created(uri, chr);
+            return CreatedAtAction("Get", new { id = chr.ID }, chr);
         }
 
         // PUT api/<CharacterController>/5
@@ -94,3 +95,4 @@ namespace StarWars.Controllers
         }
     }
 }
+ 

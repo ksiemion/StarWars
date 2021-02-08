@@ -38,21 +38,35 @@ namespace StarWars.Controllers
             {
                 return Ok(ep);
             }
-            else return NotFound();
+            else
+            {
+                return NotFound($"Episode By ID {id} was not found");
+            }
         }
 
         // POST api/<EpisodeController>
         [HttpPost]
-        public void Post(EpisodeDTO episode)
+        public IActionResult Post(EpisodeDTO episode)
         {
-            _episodeService.Add(episode);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var epi = _episodeService.Add(episode);
+            if (epi == null)
+            {
+                return NotFound($"Could not add episode to the database");
+            }
+            return CreatedAtAction("Get", new { id = epi.ID }, epi);
         }
 
         // PUT api/<EpisodeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, EpisodeDTO episode)
+        public IActionResult Put(int id, EpisodeDTO episode)
         {
             _episodeService.Update(id, episode);
+            return Ok(episode);
         }
 
         // DELETE api/<EpisodeController>/5

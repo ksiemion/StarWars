@@ -4,7 +4,6 @@ using StarWars.Core.Repositories;
 using StarWars.Infrastructure.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StarWars.Infrastructure.Services
 {
