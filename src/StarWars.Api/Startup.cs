@@ -39,11 +39,16 @@ namespace StarWars
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StarWars", Version = "v1" });
             });
 
+            //services.AddDbContext<AppDBContext>(
+            //    options =>
+            //        options.UseSqlServer(
+            //            Configuration.GetConnectionString("AppDBConnection"),
+            //            x => x.MigrationsAssembly("StarWars.Infrastructure")));
+
             services.AddDbContext<AppDBContext>(
-                options =>
-                    options.UseSqlServer(
-                        Configuration.GetConnectionString("AppDBConnection"),
-                        x => x.MigrationsAssembly("StarWars.Infrastructure")));
+              options =>
+                  options.UseSqlServer(
+                      Configuration.GetConnectionString("AppDBConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
