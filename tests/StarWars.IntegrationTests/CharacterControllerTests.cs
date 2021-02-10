@@ -1,12 +1,8 @@
-
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using StarWars.Core.Domain;
 using StarWars.Infrastructure.DTO;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -61,22 +57,62 @@ namespace StarWars.IntegrationTests
         }
 
         [Fact]
-        public async Task Post_ReturnCharacter()
+        public async Task Post_ReturnCreatedStatus()
         {
             //Arrange 
-            var chrJson = JsonConvert.SerializeObject(new CharacterDTO
+            var chrDTO = new CharacterDTO
             {
                 Name = "R2-D2",
                 Episodes = new string[] { "NEWHOPE", "EMPIRE", "JEDI" },
                 Friends = new string[] { "Luke Skywalker", "Han Solo", "Leia Organa" }
-            });
+            };
 
             // Act
-            var response = await _testClient.PostAsJsonAsync($"api/Character", new StringContent(chrJson));
+            var response = await _testClient.PostAsJsonAsync<CharacterDTO>("api/Character", chrDTO);
             response.EnsureSuccessStatusCode();
 
             // Assert
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_ReturnCharacterDTO()
+        {
+            //Arrange 
+            var chrDTO = new CharacterDTO
+            {
+                Name = "R2-D2",
+                Episodes = new string[] { "NEWHOPE", "EMPIRE", "JEDI" },
+                Friends = new string[] { "Luke Skywalker", "Han Solo", "Leia Organa" }
+            };
+
+            // Act
+            var response = await _testClient.PostAsJsonAsync<CharacterDTO>("api/Character", chrDTO);
+            response.EnsureSuccessStatusCode();
+            var postChr = await response.Content.ReadAsAsync<Character>();
+
+            // Assert
+            Assert.Equal(chrDTO.Name, postChr.Name);
+        }
+
+        [Fact]
+        public async Task Put_ReturnCharacterDTO()
+        {
+            //Arrange 
+            var chrID = 5;
+            var friends = new string[] { "Luke Skywalker", "Han Solo" };
+            var chrDTO = new CharacterDTO
+            {
+                Friends = friends
+            };
+
+            // Act
+            var putResponse = await _testClient.PutAsJsonAsync<CharacterDTO>($"api/Character/{chrID}", chrDTO);
+            putResponse.EnsureSuccessStatusCode();
+            var chrPut = await putResponse.Content.ReadAsAsync<CharacterDTO>();
+
+            // Assert
+            Assert.Equal(friends, chrPut.Friends);
         }
     }
 }

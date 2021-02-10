@@ -13,7 +13,7 @@ namespace StarWars.Infrastructure.Services
         IEnumerable<CharacterDTO> GetCharacters();
         IEnumerable<CharacterDTO> GetCharacters(int pageNumber, int pageSize);
         Character Add(CharacterDTO character);
-        void Update(int id, CharacterDTO character);
+        CharacterDTO Update(int id, CharacterDTO character);
         void Delete(int id);
     }
 
@@ -64,7 +64,7 @@ namespace StarWars.Infrastructure.Services
             return _repository.Add(_mapper.Map<Character>(character));
         }
 
-        public void Update(int id, CharacterDTO character)
+        public CharacterDTO Update(int id, CharacterDTO character)
         {
             var oldChr = _repository.GetById<Character>(id, x => x.Episodes, x => x.Friends, x => x.Planet);
             if (oldChr == null)
@@ -74,6 +74,7 @@ namespace StarWars.Infrastructure.Services
 
             var newChr = _mapper.Map(character, oldChr);
             _repository.Update(newChr);
+            return _mapper.Map<CharacterDTO>(newChr);
         }
 
         public void Delete(int id)

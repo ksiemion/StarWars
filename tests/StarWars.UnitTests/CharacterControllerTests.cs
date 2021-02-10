@@ -143,9 +143,10 @@ namespace StarWars.UnitTests
         public void Put_ReturnCharacter()
         {
             // Arrange
-            var chrID = 5;
+            var chrID = 2;
             var chrDTO = CharactersForTests.GetCharactersDTO()[chrID];
-            _characterServiceMock.Setup(x => x.Update(chrID, chrDTO));
+            var resChrDTO = CharactersForTests.GetCharactersDTO()[chrID];
+            _characterServiceMock.Setup(x => x.Update(chrID, chrDTO)).Returns(resChrDTO);
 
             // Act
             var result = _characterController.Put(chrID, chrDTO) as OkObjectResult;

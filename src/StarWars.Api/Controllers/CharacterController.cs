@@ -83,15 +83,15 @@ namespace StarWars.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, CharacterDTO character)
         {
-            _characterService.Update(id, character);
-            return Ok(character);
+            return Ok(_characterService.Update(id, character));
         }
 
         // DELETE api/<CharacterController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             _characterService.Delete(id);
+            return NoContent();
         }
     }
 }

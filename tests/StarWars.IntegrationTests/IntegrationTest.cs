@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using System.Net.Http;
-using StarWars.Infrastructure.Data;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using StarWars.Infrastructure.Data;
+using System.Linq;
+using System.Net.Http;
 
 namespace StarWars.IntegrationTests
 {
